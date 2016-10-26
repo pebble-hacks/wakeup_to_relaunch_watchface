@@ -8,6 +8,14 @@ static void prv_restart(void* data) {
 
   // will close the app
   window_stack_pop_all(false);
+
+  // schedule a wakeup 2s after now to make sure the watchface gets restarted
+  // NOTE: we do 2s instead of 1s to avoid a potential rare race condition where the
+  // current second flips after we obtained the current time
+  const time_t future_time = time(NULL) + 2;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "will restart at %lu", future_time);
+  wakeup_schedule(future_time, 0, false);
+
 }
 
 static void prv_window_load(Window *window) {
