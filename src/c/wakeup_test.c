@@ -3,6 +3,13 @@
 static Window *s_window;
 static TextLayer *s_text_layer;
 
+static void prv_restart(void* data) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "restarting...");
+
+  // will close the app
+  window_stack_pop_all(false);
+}
+
 static void prv_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
@@ -11,6 +18,8 @@ static void prv_window_load(Window *window) {
   text_layer_set_text(s_text_layer, "I am a watchface");
   text_layer_set_text_alignment(s_text_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(s_text_layer));
+
+  app_timer_register(5000, prv_restart, NULL);
 }
 
 static void prv_window_unload(Window *window) {
